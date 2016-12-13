@@ -1,0 +1,326 @@
+[
+  [
+    [
+      {
+        "id": 0,
+        "cont": "中国",
+        "pos": "ns",
+        "ne": "S-Ns",
+        "parent": 1,
+        "relate": "ATT",
+        "arg": []
+      },
+      {
+        "id": 1,
+        "cont": "国家",
+        "pos": "n",
+        "ne": "O",
+        "parent": 2,
+        "relate": "ATT",
+        "arg": []
+      },
+      {
+        "id": 2,
+        "cont": "主席",
+        "pos": "n",
+        "ne": "O",
+        "parent": 3,
+        "relate": "ATT",
+        "arg": []
+      },
+      {
+        "id": 3,
+        "cont": "胡锦涛",
+        "pos": "nh",
+        "ne": "S-Nh",
+        "parent": 5,
+        "relate": "SBV",
+        "arg": []
+      },
+      {
+        "id": 4,
+        "cont": "8日",
+        "pos": "nt",
+        "ne": "O",
+        "parent": 5,
+        "relate": "ADV",
+        "arg": []
+      },
+      {
+        "id": 5,
+        "cont": "抵达",
+        "pos": "v",
+        "ne": "O",
+        "parent": -1,
+        "relate": "HED",
+        "arg": [
+          {
+            "id": 0,
+            "type": "A0",
+            "beg": 0,
+            "end": 3
+          },
+          {
+            "id": 1,
+            "type": "TMP",
+            "beg": 4,
+            "end": 4
+          },
+          {
+            "id": 2,
+            "type": "A1",
+            "beg": 6,
+            "end": 6
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "cont": "渥太华",
+        "pos": "ns",
+        "ne": "S-Ns",
+        "parent": 5,
+        "relate": "VOB",
+        "arg": []
+      },
+      {
+        "id": 7,
+        "cont": "，",
+        "pos": "wp",
+        "ne": "O",
+        "parent": 5,
+        "relate": "WP",
+        "arg": []
+      },
+      {
+        "id": 8,
+        "cont": "开始",
+        "pos": "v",
+        "ne": "O",
+        "parent": 5,
+        "relate": "COO",
+        "arg": [
+          {
+            "id": 0,
+            "type": "A1",
+            "beg": 9,
+            "end": 12
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "cont": "对",
+        "pos": "p",
+        "ne": "O",
+        "parent": 11,
+        "relate": "ADV",
+        "arg": []
+      },
+      {
+        "id": 10,
+        "cont": "加拿大",
+        "pos": "ns",
+        "ne": "S-Ns",
+        "parent": 9,
+        "relate": "POB",
+        "arg": []
+      },
+      {
+        "id": 11,
+        "cont": "进行",
+        "pos": "v",
+        "ne": "O",
+        "parent": 8,
+        "relate": "VOB",
+        "arg": [
+          {
+            "id": 0,
+            "type": "A1",
+            "beg": 12,
+            "end": 12
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "cont": "国事访问",
+        "pos": "i",
+        "ne": "O",
+        "parent": 11,
+        "relate": "VOB",
+        "arg": []
+      },
+      {
+        "id": 13,
+        "cont": "。",
+        "pos": "wp",
+        "ne": "O",
+        "parent": 5,
+        "relate": "WP",
+        "arg": []
+      }
+    ],
+    [
+      {
+        "id": 0,
+        "cont": "中国",
+        "pos": "ns",
+        "ne": "S-Ns",
+        "parent": 1,
+        "relate": "ATT",
+        "arg": []
+      },
+      {
+        "id": 1,
+        "cont": "国家",
+        "pos": "n",
+        "ne": "O",
+        "parent": 2,
+        "relate": "ATT",
+        "arg": []
+      },
+      {
+        "id": 2,
+        "cont": "主席",
+        "pos": "n",
+        "ne": "O",
+        "parent": 3,
+        "relate": "ATT",
+        "arg": []
+      },
+      {
+        "id": 3,
+        "cont": "胡锦涛",
+        "pos": "nh",
+        "ne": "S-Nh",
+        "parent": 5,
+        "relate": "SBV",
+        "arg": []
+      },
+      {
+        "id": 4,
+        "cont": "8日",
+        "pos": "nt",
+        "ne": "O",
+        "parent": 5,
+        "relate": "ADV",
+        "arg": []
+      },
+      {
+        "id": 5,
+        "cont": "抵达",
+        "pos": "v",
+        "ne": "O",
+        "parent": -1,
+        "relate": "HED",
+        "arg": [
+          {
+            "id": 0,
+            "type": "A0",
+            "beg": 0,
+            "end": 3
+          },
+          {
+            "id": 1,
+            "type": "TMP",
+            "beg": 4,
+            "end": 4
+          },
+          {
+            "id": 2,
+            "type": "A1",
+            "beg": 6,
+            "end": 6
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "cont": "渥太华",
+        "pos": "ns",
+        "ne": "S-Ns",
+        "parent": 5,
+        "relate": "VOB",
+        "arg": []
+      },
+      {
+        "id": 7,
+        "cont": "，",
+        "pos": "wp",
+        "ne": "O",
+        "parent": 5,
+        "relate": "WP",
+        "arg": []
+      },
+      {
+        "id": 8,
+        "cont": "开始",
+        "pos": "v",
+        "ne": "O",
+        "parent": 5,
+        "relate": "COO",
+        "arg": [
+          {
+            "id": 0,
+            "type": "A1",
+            "beg": 9,
+            "end": 12
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "cont": "对",
+        "pos": "p",
+        "ne": "O",
+        "parent": 11,
+        "relate": "ADV",
+        "arg": []
+      },
+      {
+        "id": 10,
+        "cont": "加拿大",
+        "pos": "ns",
+        "ne": "S-Ns",
+        "parent": 9,
+        "relate": "POB",
+        "arg": []
+      },
+      {
+        "id": 11,
+        "cont": "进行",
+        "pos": "v",
+        "ne": "O",
+        "parent": 8,
+        "relate": "VOB",
+        "arg": [
+          {
+            "id": 0,
+            "type": "A1",
+            "beg": 12,
+            "end": 12
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "cont": "国事访问",
+        "pos": "i",
+        "ne": "O",
+        "parent": 11,
+        "relate": "VOB",
+        "arg": []
+      },
+      {
+        "id": 13,
+        "cont": "。",
+        "pos": "wp",
+        "ne": "O",
+        "parent": 5,
+        "relate": "WP",
+        "arg": []
+      }
+    ]
+  ]
+]

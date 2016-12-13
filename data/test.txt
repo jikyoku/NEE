@@ -1,0 +1,10 @@
+false 教育 /vn /v /nt /v /v /n /c /j /v 4 4
+false 教育 /vn /v /v /v /n /n /vn /f /v ## ##
+false 教育 /vn /n /v /b /n /vn /j /v /nt ## ##
+false 教育 /vn /v /b /n /vn /j /v /nt /v ## ##
+false 培训 /vn /v /v /n /v /n /b /n /n ## ##
+false 培训 /vn /v /v /n /v /n /b /n /n ## ##
+true 招生 /vn ## ## /b /n /n /d /v /q 3 2
+true 参与 /v /q /f /nr /v /v /q /m /v ## ##
+false 招生 /vn /b /n /n /vd /d /v /v /ns 1 3
+true 找 /v /v /r /v /r /n ## ## ## ## ##

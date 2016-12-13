@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.bupt.mapper.TFIDFWordMapper">
+    <insert id="insertTF" parameterType="TFIDFWord" useGeneratedKeys="true" keyProperty="id">
+        insert into tf_word (id,word,tf_value)
+        values
+        <foreach collection="list" index="index" item="wordObj" separator=",">
+            (#{wordObj.id},#{wordObj.word},#{wordObj.tfCount})
+        </foreach>
+    </insert>
+
+        <insert id="insertDF" parameterType="TFIDFWord" useGeneratedKeys="true" keyProperty="id">
+        insert into df_word (id,word,df_value)
+        values
+        <foreach collection="list" index="index" item="wordObj" separator=",">
+            (#{wordObj.id},#{wordObj.word},#{wordObj.dfCount})
+        </foreach>
+    </insert>
+
+    <select id="getWords" resultType="String">
+        select word from tf_word
+    </select>
+
+
+</mapper>
+
+

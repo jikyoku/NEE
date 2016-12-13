@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xml4nlp>
+    <note sent="y" word="y" pos="y" ne="y" parser="y" semparser="y" lstmsemparser="y" wsd="n" srl="y"/>
+    <doc>
+        <para id="0">
+            <sent id="0" cont="中国国家主席胡锦涛8日抵达渥太华，开始对加拿大进行国事访问。">
+                <word id="0" cont="中国" pos="ns" ne="S-Ns" parent="1" relate="ATT" semparent="1" semrelate="Nmod">
+                    <sem id="0" parent="1" relate="Nmod"/>
+                </word>
+                <word id="1" cont="国家" pos="n" ne="O" parent="2" relate="ATT" semparent="2" semrelate="Nmod">
+                    <sem id="0" parent="2" relate="Poss"/>
+                </word>
+                <word id="2" cont="主席" pos="n" ne="O" parent="3" relate="ATT" semparent="5" semrelate="Agt">
+                    <sem id="0" parent="5" relate="Agt"/>
+                    <sem id="1" parent="8" relate="Agt"/>
+                </word>
+                <word id="3" cont="胡锦涛" pos="nh" ne="S-Nh" parent="5" relate="SBV" semparent="5" semrelate="Agt">
+                    <sem id="0" parent="2" relate="Nmod"/>
+                </word>
+                <word id="4" cont="8日" pos="nt" ne="O" parent="5" relate="ADV" semparent="5" semrelate="Time">
+                    <sem id="0" parent="5" relate="Time"/>
+                </word>
+                <word id="5" cont="抵达" pos="v" ne="O" parent="-1" relate="HED" semparent="-1" semrelate="Root">
+                    <arg id="0" type="A0" beg="0" end="3"/>
+                    <arg id="1" type="TMP" beg="4" end="4"/>
+                    <arg id="2" type="A1" beg="6" end="6"/>
+                    <sem id="0" parent="-1" relate="Root"/>
+                </word>
+                <word id="6" cont="渥太华" pos="ns" ne="S-Ns" parent="5" relate="VOB" semparent="5" semrelate="Dir">
+                    <sem id="0" parent="5" relate="Lfin"/>
+                </word>
+                <word id="7" cont="，" pos="wp" ne="O" parent="5" relate="WP" semparent="5" semrelate="mPunc">
+                    <sem id="0" parent="5" relate="mPunc"/>
+                </word>
+                <word id="8" cont="开始" pos="v" ne="O" parent="5" relate="COO" semparent="5" semrelate="eSucc">
+                    <arg id="0" type="A1" beg="9" end="12"/>
+                    <sem id="0" parent="5" relate="eSucc"/>
+                </word>
+                <word id="9" cont="对" pos="p" ne="O" parent="11" relate="ADV" semparent="10" semrelate="mPrep">
+                    <sem id="0" parent="10" relate="mPrep"/>
+                </word>
+                <word id="10" cont="加拿大" pos="ns" ne="S-Ns" parent="9" relate="POB" semparent="11" semrelate="Datv">
+                    <sem id="0" parent="12" relate="Datv"/>
+                </word>
+                <word id="11" cont="进行" pos="v" ne="O" parent="8" relate="VOB" semparent="12" semrelate="mVain">
+                    <arg id="0" type="A1" beg="12" end="12"/>
+                    <sem id="0" parent="12" relate="mVain"/>
+                </word>
+                <word id="12" cont="国事访问" pos="i" ne="O" parent="11" relate="VOB" semparent="8" semrelate="dCont">
+                    <sem id="0" parent="8" relate="dCont"/>
+                </word>
+                <word id="13" cont="。" pos="wp" ne="O" parent="5" relate="WP" semparent="8" semrelate="mPunc">
+                    <sem id="0" parent="8" relate="mPunc"/>
+                </word>
+            </sent>
+        </para>
+    </doc>
+</xml4nlp>
