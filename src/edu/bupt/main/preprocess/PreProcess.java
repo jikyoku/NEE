@@ -20,9 +20,6 @@ import java.util.regex.Pattern;
  */
 public class PreProcess {
     public static final String END_LABEL = "。|！|\\.|？|\\?";
-    private static TriggerWordService triggerWordService = new TriggerWordServiceImpl();
-    private static Map<String, TriggerWord> triggerWordMap = triggerWordService.getMapOfTriggerWord();
-    private static List<Sentence> sentenceList;
 
     /**
      * 清理字符串
@@ -35,7 +32,7 @@ public class PreProcess {
         return str.replaceAll(regex, "").replaceAll("^[　*| *]*", "").replaceAll("[　*| *]*$", "");
     }
 
-    /**
+      /**
      * 对新闻进行分句
      *
      * @param news  新闻字符串
@@ -51,18 +48,5 @@ public class PreProcess {
             sentenceList.add(new Sentence(clean(senCont)));
         }
         return sentenceList;
-    }
-
-    
-    public static void handler(News newsObj) {
-        newsObj.setContent(clean(newsObj.getContent()));
-        sentenceList = newsSeparate(newsObj.getContent(), END_LABEL);
-        for (Sentence sentObj :
-                sentenceList) {
-            SegmentHandler.ansjSeg(sentObj);
-        }
-        newsObj.setSentenceList(sentenceList);
-        TopicSentExtractor ts = new TopicSentExtractor(newsObj);
-        ts.handler();
     }
 }

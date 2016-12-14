@@ -38,4 +38,13 @@ public class CommonMapperImpl implements CommonMapper {
         session.commit();
         session.close();
     }
+
+    @Override
+    public String getCoreSentByTitle(String title) {
+        SqlSession session = SessionFactoryUtil.getSessionFactory().openSession();
+        CommonMapper cm = session.getMapper(CommonMapper.class);
+        String coreSent = cm.getCoreSentByTitle(title);
+        session.close();
+        return coreSent;
+    }
 }

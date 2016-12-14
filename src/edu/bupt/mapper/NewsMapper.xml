@@ -17,6 +17,18 @@
         WHERE id = #{id}
     </select>
 
+    <select id="getNewsList" resultType="string">
+        select content from news
+        <where>
+            <if test="startId != null">
+                id >= #{startId}
+            </if>
+            <if test="length != null">
+                limit #{length}
+            </if>
+        </where>
+    </select>
+
     <select id="getNewsMap" resultType="news">
         SELECT
             id,

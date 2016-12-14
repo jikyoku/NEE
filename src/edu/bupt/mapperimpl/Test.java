@@ -11,6 +11,6 @@ import java.util.*;
 public class Test {
     public static void main(String[] args) {
         NewsMapper  newsMapper = new NewsMapperImpl();
-        System.out.println(newsMapper.getNewsMap(1,10,null).size());
+        System.out.println(newsMapper.getNewsList(5001,null).size());
     }
 }

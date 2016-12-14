@@ -18,4 +18,7 @@ public interface CommonMapper {
     @MapKey("word")
     Map<String,Map<String,Object>> getDFMap();
     void insertWord(List<String> wordList);
+
+    @Select("select coreSent from forshixu where title = #{title}")
+    String getCoreSentByTitle(String title);
 }

@@ -20,28 +20,29 @@ import java.util.*;
  * 抽取出一篇新闻的主题句
  */
 public class TopicSentExtractor {
-    private static Map<String, Map<String, Integer>> dfMap;
     private static CommonMapper commonMapper;
     private News news;
     private Map<String, Integer> topicWordMap;
     private Map<String, Integer> tfMap;
+    private Map<String, Map<String, Integer>> dfMap;
     private Sentence title;
 
     private int size = 4000;
     private static final int MIN_TF_IDF = 8;
     private static final int MIN_SENT_LENGTH = 16;
 
+
     public TopicSentExtractor(News news) {
-        commonMapper = new CommonMapperImpl();
-        dfMap = commonMapper.getDfMap();
+        this.commonMapper = new CommonMapperImpl();
+        this.dfMap = commonMapper.getDfMap(); //word -> document frequency
         this.topicWordMap = new HashMap<>();
-        tfMap = new HashMap<>();
+        this.tfMap = new HashMap<>();
         this.news = news;
-        title = new Sentence(news.getTitle());
+        this.title = new Sentence(news.getTitle());
     }
 
-    public void handler() {
-        setTopicWordSet();
+    public TreeMap<Double, Sentence> handler() {
+        buildTopicWordSet();   //生成文章的主题词集合
         TreeMap<Double, Sentence> sentenceTreeMap = new TreeMap<>(new Comparator<Double>() {
             @Override
             public int compare(Double o1, Double o2) {
@@ -52,7 +53,17 @@ public class TopicSentExtractor {
             EntityExtractor.entityExtract(sentence); //抽取实体
             sentenceTreeMap.put(getFinalWeight(sentence), sentence); //将句子的权重放进map中
         }
-        System.out.println("##ID:" + news.getId() + "\t[" + news.getTitle()+"]");
+        resultPrint(sentenceTreeMap);
+        return sentenceTreeMap;
+    }
+
+    /**
+     * 打印结果
+     *
+     * @param sentenceTreeMap
+     */
+    private void resultPrint(TreeMap<Double, Sentence> sentenceTreeMap) {
+        System.out.println("##ID:" + news.getId() + "\t[" + news.getTitle() + "]");
         System.out.println("```\n" + news.getContent() + "\n```");
         int i = 0;
         System.out.println("###主题句");
@@ -60,7 +71,7 @@ public class TopicSentExtractor {
                 sentenceTreeMap.entrySet()) {
             if (i++ > 10)
                 break;
-            System.out.print("\n**" + entry.getValue().getSentenceContent()+"**");
+            System.out.print("\n**" + entry.getValue().getSentenceContent() + "**");
             System.out.print("\n>**权重：**" + entry.getKey() + "");
             System.out.print("\n**实体：**");
             for (Entity entity :
@@ -72,7 +83,14 @@ public class TopicSentExtractor {
         System.out.println("---");
     }
 
-    public double getFinalWeight(Sentence sentence) {
+    /**
+     * 计算sentence的总权值
+     *
+     * @param sentence 句子对象
+     * @return 权值结果
+     * 初始权重： 0.2 * sentLenScore + 4 * similarity * alpha + 6 * neScore;
+     */
+    private double getFinalWeight(Sentence sentence) {
         int sentLenScore = sentence.getWordList().size() > MIN_SENT_LENGTH ? 1 : 0;
         double alpha;
         int titleWeight = getTitleValue();
@@ -82,17 +100,23 @@ public class TopicSentExtractor {
             alpha = 0.1;
         double similarity = getSim(sentence, title);
         double neScore = (double) sentence.getEntityList().size() / sentence.getWordList().size();
-        return 0.2 * sentLenScore + 4 * similarity * alpha + 6 * neScore;
+        double finalWeight = 0.2 * sentLenScore + 4 * similarity * alpha + 6 * neScore;
+        finalWeight = 1 / (1 + Math.pow(Math.E, -finalWeight));  //用sigmoid函数将值归一化到0-1取件
+        return finalWeight;
     }
 
     /**
      * 通过余弦相似度法则 计算两个句子的相似度
      *
-     * @param title    标题
-     * @param sentence 句子
+     * @param title    标题 把标题当作一个Sentence对象来处理
+     * @param sentence 句子对象
      * @return 余弦值
      */
-    public double getSim(Sentence title, Sentence sentence) {
+    public static double getSim(Sentence title, Sentence sentence) {
+        if (title.getWordList() == null)
+            SegmentHandler.xfYunPos(title);
+        if (sentence.getWordList() == null)
+            SegmentHandler.xfYunPos(sentence);
         Set<String> wordSet = new HashSet<>();
         for (Word word :
                 title.getWordList()) {
@@ -133,7 +157,7 @@ public class TopicSentExtractor {
      * @param wordList
      * @return
      */
-    public boolean isIncluded(String wordCon, List<Word> wordList) {
+    private static boolean isIncluded(String wordCon, List<Word> wordList) {
         for (Word word :
                 wordList) {
             if (word.getCont().equals(wordCon))
@@ -146,9 +170,9 @@ public class TopicSentExtractor {
     /**
      * 计算标题的可参考价值
      *
-     * @return
+     * @return 标题和主题词集合重复的词（动词、名词）的个数
      */
-    public int getTitleValue() {
+    private int getTitleValue() {
         SegmentHandler.xfYunPos(title);
         int titleWeight = 0;
         List<Word> wordList = title.getWordList();
@@ -164,10 +188,9 @@ public class TopicSentExtractor {
 
 
     /**
-     * 生成当前新闻的主题词集合
+     * 生成当前文章的主题词集合
      */
-    @Test
-    public void setTopicWordSet() {
+    private void buildTopicWordSet() {
         List<Sentence> sentenceList = news.getSentenceList();
         List<Word> wordList;
         for (Sentence sentObj :
@@ -185,26 +208,29 @@ public class TopicSentExtractor {
         for (Map.Entry<String, Integer> entry :
                 tfMap.entrySet()) {
             String word = entry.getKey();
-            if (dfMap.get(word) == null) {
-                continue;
+            int df = 1;
+            if (dfMap.get(word) != null) {
+                df = Integer.parseInt(String.valueOf(dfMap.get(word).get("df_value")));
             }
             int tf = entry.getValue();
-            int df = Integer.parseInt(String.valueOf(dfMap.get(word).get("df_value")));
             int tfIdf = tfIdf(tf, df, size);
             if (tfIdf > MIN_TF_IDF)
                 topicWordMap.put(word, tfIdf);
         }
+
+        System.out.println("-------------------主题词集合："+topicWordMap);
+
     }
 
     /**
-     * 计算tf idf
+     * 计算tf_idf值
      *
      * @param tf 词在当前文档中出现的次数
      * @param df 词在所有文档中出现的次数（每篇文章如果出现，只算一次）
      * @param n  文档总数
      * @return tf_idf值
      */
-    public static int tfIdf(int tf, int df, int n) {
+    private static int tfIdf(int tf, int df, int n) {
         return new Double(tf * (Math.log(n / (df + 1)))).intValue();
     }
 
@@ -213,6 +239,7 @@ public class TopicSentExtractor {
         int tf = 1;
         int df = 66;
         System.out.println(tfIdf(tf, df, 4000));
+        System.out.println(getSim(new Sentence("通信 计算机 电影"),new Sentence("我不喜欢看电视，也不喜欢看电影")));
     }
 
 }

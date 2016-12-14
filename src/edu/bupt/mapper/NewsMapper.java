@@ -51,9 +51,5 @@ public interface NewsMapper {
     @Select("select count(*) from news")
     int getNewsCount();
 
-    @Select("select content from news")
-    List<String> getNewsList();
-
-    @Select("select content from news where id>#{id} limit #{n}")
-    List<String> getNewsContentList(@Param("id") int startId, @Param("n") int n);
+    List<String> getNewsList(@Param("startId") Integer startId, @Param("length") Integer length);
 }

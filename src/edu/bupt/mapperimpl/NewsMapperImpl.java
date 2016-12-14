@@ -28,12 +28,14 @@ public class NewsMapperImpl implements NewsMapper {
 
     @Override
     public List<Integer> getIdList() {
-        SqlSession session = SessionFactoryUtil.getSessionFactory().openSession();
-        NewsMapper newsMapper = session.getMapper(NewsMapper.class);
-        List<Integer> ids = newsMapper.getIdList();
-        session.close();
-        return ids;
+        SqlSession sqlsession = SessionFactoryUtil.getSessionFactory().openSession();
+        NewsMapper newsMapper = sqlsession.getMapper(NewsMapper.class);
+        List<Integer> idList = newsMapper.getIdList();
+        sqlsession.close();
+        return idList;
     }
+
+
 
     @Override
     public String getNewsById(int id) {
@@ -74,19 +76,10 @@ public class NewsMapperImpl implements NewsMapper {
     }
 
     @Override
-    public List<String> getNewsList() {
+    public List<String> getNewsList(Integer startId, Integer length) {
         SqlSession session = SessionFactoryUtil.getSessionFactory().openSession();
         NewsMapper newsMapper = session.getMapper(NewsMapper.class);
-        List<String> newsList = newsMapper.getNewsList();
-        session.close();
-        return newsList;
-    }
-
-    @Override
-    public List<String> getNewsContentList(int startId, int length) {
-        SqlSession session = SessionFactoryUtil.getSessionFactory().openSession();
-        NewsMapper newsMapper = session.getMapper(NewsMapper.class);
-        List<String> newsList = newsMapper.getNewsContentList(startId, length);
+        List<String> newsList = newsMapper.getNewsList(startId, length);
         session.close();
         return newsList;
     }

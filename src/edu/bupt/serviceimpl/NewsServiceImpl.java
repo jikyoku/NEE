@@ -46,14 +46,11 @@ public class NewsServiceImpl implements NewsService {
         return newsMapper.getNewsCount();
     }
 
-    @Override
-    public List<String> getNewsList() {
-        return newsMapper.getNewsList();
-    }
+
 
     @Override
-    public List<String> getNewsList(int startId, int length) {
-        return newsMapper.getNewsContentList(startId, length);
+    public List<String> getNewsList(Integer startId, Integer length) {
+        return newsMapper.getNewsList(startId, length);
     }
 
 

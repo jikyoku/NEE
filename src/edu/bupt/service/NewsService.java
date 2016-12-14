@@ -23,8 +23,5 @@ public interface NewsService {
     int getNewsCount();
 
 
-    List<String> getNewsList();
-
-    List<String> getNewsList(int startId, int length);
-
+    List<String> getNewsList(Integer startId, Integer length);
 }

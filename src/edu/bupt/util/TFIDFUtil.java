@@ -23,91 +23,46 @@ import edu.bupt.model.Word;
  */
 public class TFIDFUtil {
     private static NewsService newsService;
-    private static HashMap<String, Integer> tfMap = new HashMap<>();
     private static HashMap<String, Integer> dfMap = new HashMap<>();
     private static List<String> newsList = null;
     private static TFIDFWordMapper tfidfWordMapper = null;
-    private static int numOfNews = 50;
+
 
     static {
         newsService = new NewsServiceImpl();
         tfidfWordMapper = new TFIDFWordMapperImpl();
-        newsList = newsService.getNewsList(5001, numOfNews);
+        newsList = newsService.getNewsList(5001, null);
     }
-
-    private void initTfMap() {
-        newsList = newsService.getNewsList();
-        int h = 1;
-        for (String news :
-                newsList) {
-            System.out.println("news id:" + (h++));
-            news = news.replaceAll("^[　*| *]*", "").replaceAll("[　*| *]*$", "");
-            Sentence sentence = new Sentence();
-            sentence.setSentenceContent(news);
-            SegmentHandler.ansjSeg(sentence);
-            String[] words = sentence.getWords();
-            String[] tags = sentence.getTaggers();
-
-
-            for (int i = 0; i < tags.length; i++) {
-                if (tags[i].equals("v")) {
-                    //int countInNews = getCountInNews(words[i], words);
-                    if (!tfMap.containsKey(words[i]))
-                        tfMap.put(words[i], 1);
-                    else
-                        tfMap.put(words[i], tfMap.get(words[i]) + 1);
-                }
-            }
-        }
-        System.out.println(tfMap);
-        System.out.println(tfMap.size());
-    }
-
-    private void insertTfMap() {
-        List<TFIDFWord> tfidfWords = new ArrayList<>(tfMap.size());
-        for (Map.Entry<String, Integer> entry : tfMap.entrySet()) {
-            TFIDFWord tfidfWord = new TFIDFWord();
-            tfidfWord.setTfCount(entry.getValue());
-            tfidfWord.setWord(entry.getKey());
-            tfidfWords.add(tfidfWord);
-            if (tfidfWords.size() > 1000) {
-                tfidfWordMapper.insertTF(tfidfWords);
-                tfidfWords.clear();
-            }
-        }
-        tfidfWordMapper.insertTF(tfidfWords);
-    }
-
     private void insertDfMap() {
         System.out.println("开始插入：");
         int i = 0;
-        int size = 1000;
-        List<TFIDFWord> tfidfWords = new ArrayList<>(size);
+        int bufferSize = 1000;
+        List<TFIDFWord> tfidfWords = new ArrayList<>(bufferSize);
         for (Map.Entry<String, Integer> entry : dfMap.entrySet()) {
             TFIDFWord tfidfWord = new TFIDFWord();
             tfidfWord.setDfCount(entry.getValue());
             tfidfWord.setWord(entry.getKey());
             tfidfWords.add(tfidfWord);
-            if (tfidfWords.size() >= size) {
+            if (tfidfWords.size() >= bufferSize) {
                 tfidfWordMapper.insertDF(tfidfWords);
                 tfidfWords.clear();
-                System.out.println("还剩" + (dfMap.size() - (++i) * size) + "条---");
+                System.out.println("还剩" + (dfMap.size() - (++i) * bufferSize) + "条---");
             }
         }
         tfidfWordMapper.insertDF(tfidfWords);
     }
 
-    public void initDfMap() {
+    private void buildDfMap() {
         int i = 0;
+
         String[] poses = {"n", "v"};
         for (String pos :
                 poses) {
-            for (String news :
+            for (String newsCont :
                     newsList) {
-                news = PreProcess.clean(news);
+                newsCont = PreProcess.clean(newsCont);
                 System.out.println("news id:" + (i++));
-                List<Sentence> sentenceList = PreProcess.newsSeparate(news, PreProcess.END_LABEL);
-                //  Sentence sentence = new Sentence(news); //把一篇新闻当作一个句子处理。
+                List<Sentence> sentenceList = PreProcess.newsSeparate(newsCont, PreProcess.END_LABEL);
                 for (Sentence sentence :
                         sentenceList) {
                     if ("".equals(sentence.getSentenceContent().trim()))
@@ -122,8 +77,6 @@ public class TFIDFUtil {
                     }
                 }
             }
-
-            System.out.println("------------词性" + pos + "个数：" + dfMap.size());
         }
         //统计词的文档频率（df）
         i = 0;
@@ -141,8 +94,8 @@ public class TFIDFUtil {
     }
 
     @Test
-    public void test() {
-        initDfMap();
+    public void handler() {
+        buildDfMap();
         insertDfMap();
     }
 }

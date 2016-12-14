@@ -22,13 +22,15 @@ import edu.bupt.model.Word;
  */
 public class SegmentHandler {
 
+
     /**
-     * ansj分词 使用过滤器
+     * ansj分词器 有过滤器
      *
-     * @param content 需要分词的内容
-     * @return 分词后的内容
+     * @param sentence 句子
+     * @param filter   过滤器
+     * @return 分词之后的sentence对象
      */
-    public static Sentence ansjSeg(Sentence sentence, FilterRecognition filter) {
+    public static Sentence ansjPos(Sentence sentence, FilterRecognition filter) {
         List<Term> terms = ToAnalysis.parse(sentence.getSentenceContent()).recognition(filter).getTerms();
         List<Word> wordList = new ArrayList<>(terms.size());
         for (int i = 0; i < terms.size(); i++) {
@@ -49,7 +51,7 @@ public class SegmentHandler {
      * @param sentence
      * @return
      */
-    public static Sentence ansjSeg(Sentence sentence) {
+    public static Sentence ansjPos(Sentence sentence) {
         List<Term> terms = BaseAnalysis.parse(sentence.getSentenceContent()).getTerms();
         List<Word> wordList = new ArrayList<>(terms.size());
         for (int i = 0; i < terms.size(); i++) {
@@ -83,7 +85,7 @@ public class SegmentHandler {
         Sentence sentence = new Sentence();
         sentence.setSentenceContent("数据计算平台搭建，基础算法实现，当然，要求支持大样本量、高维度数据，所以可能还需要底层开发、并行计算、分布式计算等方面的知识；");
         System.out.println("ansj的分词结果：-----------");
-        ansjSeg(sentence);
+        ansjPos(sentence);
         System.out.println(sentence.getWordList());
         System.out.println("科大讯飞的分词结果：-----------");
         xfYunPos(sentence);
