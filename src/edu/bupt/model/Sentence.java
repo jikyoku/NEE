@@ -14,6 +14,15 @@ public class Sentence {
     private String[] taggers;
     private List<Word> wordList;
     private List<Entity> entityList;
+    private Event event;
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
 
     public List<Entity> getEntityList() {
         return entityList;
