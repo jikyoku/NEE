@@ -142,7 +142,7 @@ public class FileReadUtil {
     }
 
     public static void main(String[] args) {
-        String path = "C:\\Users\\shixu\\Desktop\\event extraction\\trigger.txt";
+        String path = "C:\\Users\\shixu\\Desktop\\triggerLess.txt";
         FileReadUtil.readAndAdd(path);
     }
 }

@@ -2,12 +2,11 @@ package edu.bupt.main.segment;
 
 import edu.bupt.http.HttpRequest;
 import edu.bupt.model.Sentence;
-import edu.bupt.util.json.ParseJson;
+import edu.bupt.util.json.JsonParser;
 import org.ansj.domain.Term;
 import org.ansj.library.UserDefineLibrary;
 import org.ansj.recognition.impl.FilterRecognition;
 import org.ansj.splitWord.analysis.BaseAnalysis;
-import org.ansj.splitWord.analysis.NlpAnalysis;
 import org.ansj.splitWord.analysis.ToAnalysis;
 import org.json.JSONArray;
 import org.junit.Test;
@@ -72,9 +71,9 @@ public class SegmentHandler {
      * @return
      */
     public static Sentence xfYunPos(Sentence sentence) {
-        String jsonStr = HttpRequest.xfyunHttpApi(sentence.getSentenceContent(), HttpRequest.PATTERN_POS, HttpRequest.FORMAT_JSON);
-        JSONArray jsonArray = ParseJson.getJsonArrayByStr(jsonStr);
-        List<Word> wordList = ParseJson.parseJsonArrayToWords(jsonArray);
+        String jsonStr = HttpRequest.xfyunHttpApi(sentence.getSentenceContent(), HttpRequest.PATTERN_SRL, HttpRequest.FORMAT_JSON);
+        JSONArray jsonArray = JsonParser.getJsonArrayByStr(jsonStr);
+        List<Word> wordList = JsonParser.parseJsonArrayToWords(jsonArray);
         sentence.setWordList(wordList);
         return sentence;
     }

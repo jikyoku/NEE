@@ -20,82 +20,83 @@ import edu.bupt.model.Word;
 
 /**
  * Created by shi xu on 2016/11/10.
+ * tf idf
  */
 public class TFIDFUtil {
-    private static NewsService newsService;
-    private static HashMap<String, Integer> dfMap = new HashMap<>();
-    private static List<String> newsList = null;
-    private static TFIDFWordMapper tfidfWordMapper = null;
+    private HashMap<String, Integer> dfMap;
+    private TreeMap<Integer, News> newsMap;
+    private CommonMapper commonMapper;
 
-
-    static {
-        newsService = new NewsServiceImpl();
-        tfidfWordMapper = new TFIDFWordMapperImpl();
-        newsList = newsService.getNewsList(5001, null);
-    }
-    private void insertDfMap() {
-        System.out.println("开始插入：");
-        int i = 0;
-        int bufferSize = 1000;
-        List<TFIDFWord> tfidfWords = new ArrayList<>(bufferSize);
-        for (Map.Entry<String, Integer> entry : dfMap.entrySet()) {
-            TFIDFWord tfidfWord = new TFIDFWord();
-            tfidfWord.setDfCount(entry.getValue());
-            tfidfWord.setWord(entry.getKey());
-            tfidfWords.add(tfidfWord);
-            if (tfidfWords.size() >= bufferSize) {
-                tfidfWordMapper.insertDF(tfidfWords);
-                tfidfWords.clear();
-                System.out.println("还剩" + (dfMap.size() - (++i) * bufferSize) + "条---");
-            }
-        }
-        tfidfWordMapper.insertDF(tfidfWords);
-    }
-
-    private void buildDfMap() {
-        int i = 0;
-
-        String[] poses = {"n", "v"};
-        for (String pos :
-                poses) {
-            for (String newsCont :
-                    newsList) {
-                newsCont = PreProcess.clean(newsCont);
-                System.out.println("news id:" + (i++));
-                List<Sentence> sentenceList = PreProcess.newsSeparate(newsCont, PreProcess.END_LABEL);
-                for (Sentence sentence :
-                        sentenceList) {
-                    if ("".equals(sentence.getSentenceContent().trim()))
-                        continue;
-                    SegmentHandler.xfYunPos(sentence);
-                    List<Word> wordList = sentence.getWordList();
-                    for (Word word :
-                            wordList) {
-                        if (word.getPos().contains(pos)) {
-                            dfMap.put(word.getCont(), 0);
-                        }
-                    }
-                }
-            }
-        }
-        //统计词的文档频率（df）
-        i = 0;
-        for (Map.Entry<String, Integer> wordEntry :
-                dfMap.entrySet()) {
-            int count = 0;
-            for (String news :
-                    newsList) {
-                if (news.contains(wordEntry.getKey()))
-                    count++;
-            }
-            System.out.println("word id:" + (i++));
-            dfMap.put(wordEntry.getKey(), count);
-        }
+    public TFIDFUtil(TreeMap<Integer, News> newsMap,CommonMapper commonMapper) {
+        this.newsMap = newsMap;
+        this.commonMapper = commonMapper;
+        this.dfMap = new HashMap<>();
     }
 
     @Test
     public void handler() {
         buildDfMap();
         insertDfMap();
+    }
+
+
+    private void insertDfMap() {
+        Map<String, Map<String, Integer>> param = new HashMap<>();
+        param.put("keys", dfMap);
+        commonMapper.insertDF(param);
+    }
+
+
+    private void buildDfMap() {
+        String[] poses = {"n", "v"};
+        String newsCont;
+        for (Map.Entry<Integer, News> newsEntry : newsMap.entrySet()) {
+            newsCont = PreProcess.clean(newsEntry.getValue().getContent());
+            News newsObj = newsEntry.getValue();
+            newsObj.setTitleSent(new Sentence(newsObj.getTitle()));
+            List<Sentence> sentenceList = PreProcess.split(newsCont, PreProcess.END_LABEL);
+           // sentenceList.add(newsObj.getTitleSent()); //把标题当作句子也要处理
+            newsObj.setSentenceList(sentenceList);
+            newsObj.setTitleSent(SegmentHandler.xfYunPos(newsObj.getTitleSent()));
+            for (Sentence sentence :
+                    sentenceList) {
+                if ("".equals(sentence.getSentenceContent().trim()))
+                    continue;
+                SegmentHandler.xfYunPos(sentence);
+                List<Word> wordList = sentence.getWordList();
+                for (Word word :
+                        wordList) {
+                    for (String pos :
+                            poses) {
+                        if (word.getPos().contains(pos)) {
+                            dfMap.put(word.getCont(), 0);
+                            break;
+                        }
+                    }
+                }
+            }
+            for (Word word :
+                        newsObj.getTitleSent().getWordList()) {
+                    for (String pos :
+                            poses) {
+                        if (word.getPos().contains(pos)) {
+                            dfMap.put(word.getCont(), 0);
+                            break;
+                        }
+                    }
+                }
+        }
+        //统计词的文档频率（df）
+        int i = 0;
+        for (Map.Entry<String, Integer> wordEntry :
+                dfMap.entrySet()) {
+            int count = 0;
+            for (Map.Entry<Integer, News> newsEntry : newsMap.entrySet()) {
+                if (newsEntry.getValue().getContent().contains(wordEntry.getKey()))
+                    count++;
+            }
+            System.out.println("word id:" + (i++));
+            dfMap.put(wordEntry.getKey(), count);
+        }
     }
 }

@@ -25,6 +25,20 @@ public class News {
     private String content;
     private List<Sentence> sentenceList;
 
+    private Sentence titleSent;
+
+    public News(){
+        titleSent = new Sentence(title);
+    }
+
+    public Sentence getTitleSent() {
+        return titleSent;
+    }
+
+    public void setTitleSent(Sentence titleSent) {
+        this.titleSent = titleSent;
+    }
+
     public List<Sentence> getSentenceList() {
         return sentenceList;
     }

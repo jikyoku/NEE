@@ -17,6 +17,10 @@ public class Entity {
     public static final int LOC_ENTITY = 3;
     public static final int ORG_ENTITY = 4;
 
+    public Entity(String s) {
+        this.entityContent = s;
+    }
+
     @Override
     public String toString() {
         return "Entity{" +
@@ -26,6 +30,11 @@ public class Entity {
                 ", entityContent='" + entityContent + '\'' +
                 ", position=" + position +
                 '}';
+    }
+
+    public Entity(String cont,int type){
+        this.entityContent = cont;
+        this.entityTypeId = type;
     }
 
     private int id;

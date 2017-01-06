@@ -1,5 +1,6 @@
 package edu.bupt.util.json;
 
+import edu.bupt.model.Argument;
 import edu.bupt.model.Word;
 import org.fnlp.nlp.corpus.WordList;
 import org.json.JSONArray;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by shixu on 2016/11/30.
  */
-public class ParseJson {
+public class JsonParser {
     public static void main(String[] args) throws JSONException {
         String json = "[\n" +
                 "  [\n" +
@@ -72,6 +73,31 @@ public class ParseJson {
                 }
                 if (jsonObject.has("pos")) {
                     word.setPos(jsonObject.getString("pos"));
+                }
+                if (jsonObject.has("parent")) {
+                    word.setParent(jsonObject.getInt("parent"));
+                }
+                if (jsonObject.has("relate")) {
+                    word.setRelate(jsonObject.getString("relate"));
+                }
+                if (jsonObject.has("arg")) {
+                    JSONArray argJsonArray = jsonObject.getJSONArray("arg");
+                    JSONObject argJsonObject;
+                    Argument argument;
+                    if (argJsonArray.length() != 0) {
+                        List<Argument> argumentList = new ArrayList<>(argJsonArray.length());
+                        for (int j = 0; j < argJsonArray.length(); j++) {
+                            argJsonObject = argJsonArray.getJSONObject(j);
+                            argument = new Argument();
+                            argument.setId(argJsonObject.getInt("id"));
+                            argument.setBeg(argJsonObject.getInt("beg"));
+                            argument.setEnd(argJsonObject.getInt("end"));
+                            argument.setType(argJsonObject.getString("type"));
+                            argumentList.add(argument);
+                        }
+                        word.setArguments(argumentList);
+                    }
+
                 }
                 wordList.add(word);
             }

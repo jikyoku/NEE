@@ -2,9 +2,11 @@ package edu.bupt.mapperimpl;
 
 import edu.bupt.mapper.CommonMapper;
 import edu.bupt.util.SessionFactoryUtil;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionManager;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,5 +48,50 @@ public class CommonMapperImpl implements CommonMapper {
         String coreSent = cm.getCoreSentByTitle(title);
         session.close();
         return coreSent;
+    }
+
+    @Override
+    public Integer getLogEndId() {
+        SqlSession session = SessionFactoryUtil.getSessionFactory().openSession();
+        CommonMapper cm = session.getMapper(CommonMapper.class);
+        Integer endId = cm.getLogEndId();
+        session.close();
+        return endId;
+    }
+
+    @Override
+    public void insertNewLog(@Param("startId") Integer startId, @Param("endId") Integer endId) {
+        SqlSession session = SessionFactoryUtil.openSeeion();
+        CommonMapper cm = session.getMapper(CommonMapper.class);
+        cm.insertNewLog(startId, endId);
+        session.commit();
+        session.close();
+    }
+
+    @Override
+    public void insertDF(Map<String,Map<String,Integer>>  params) {
+        SqlSession session = SessionFactoryUtil.openSeeion();
+        CommonMapper cm = session.getMapper(CommonMapper.class);
+        cm.insertDF(params);
+        session.commit();
+        session.close();
+    }
+
+    @Override
+    public void updateDfOne(@Param("word") String word, @Param("df") Integer df) {
+        SqlSession session = SessionFactoryUtil.openSeeion();
+        CommonMapper cm = session.getMapper(CommonMapper.class);
+        cm.updateDfOne(word,df);
+        session.commit();
+        session.close();
+    }
+
+    @Override
+    public void insertDFOne(@Param("word") String word, @Param("df") Integer df) {
+        SqlSession session = SessionFactoryUtil.openSeeion();
+        CommonMapper cm = session.getMapper(CommonMapper.class);
+        cm.insertDFOne(word,df);
+        session.commit();
+        session.close();
     }
 }

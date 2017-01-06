@@ -19,6 +19,13 @@
             <!--df_value-->
         <!--FROM df_word-->
     <!--</select>-->
+<!--批量插入  map类型-->
+    <insert id="insertDF" keyProperty="id" useGeneratedKeys="true" parameterType="hashmap">
+        insert into df_word (word,df_value) VALUES
+        <foreach collection="keys"  item="value" separator="," index="key">
+            (#{key},#{value})
+        </foreach>
+    </insert>
 
 </mapper>
 
