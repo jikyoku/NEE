@@ -1,14 +1,13 @@
 package edu.bupt.mapper;
 
-import edu.bupt.model.TFIDFWord;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Created by shixu on 2016/12/5.
+ * Created by shi xu on 2016/12/5.
+ * 公用mapper
  */
 public interface CommonMapper {
     @MapKey("word")
@@ -23,7 +22,7 @@ public interface CommonMapper {
     @Select("select coreSent from forshixu where title = #{title}")
     String getCoreSentByTitle(String title);
 
-    @Select("select endid from log ORDER BY id DESC limit 1;")
+    @Select("select endId from log ORDER BY id DESC limit 1;")
     Integer getLogEndId();
 
     @Insert("insert into log (startId,endId) values(#{startId},#{endId})")
@@ -36,4 +35,9 @@ public interface CommonMapper {
     @Update("insert into  df_word (word,df_value) value(#{word},#{df})")
 
     void insertDFOne(@Param("word") String word, @Param("df") Integer df);
+
+    @Select("select size from size")
+    Integer getSize();
+    @Update("update size set size = #{size}")
+    void updateSize(Integer size);
 }

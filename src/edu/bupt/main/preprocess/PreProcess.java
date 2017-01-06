@@ -11,6 +11,10 @@ import java.util.regex.Pattern;
 
 /**
  * Created by shi xu on 2016-07-26.
+ * 预处理
+ * 1. 分词
+ * 2. 分句
+ * 3. 去除无用标签
  */
 public class PreProcess {
     public static final String END_LABEL = "。|！|？|\\?";
@@ -35,10 +39,10 @@ public class PreProcess {
      */
     public static List<Sentence> split(String news, String regex) {
         Pattern pattern = Pattern.compile(regex);
-        String[] sentConts = pattern.split(news);
-        List<Sentence> sentenceList = new ArrayList<>(sentConts.length);
+        String[] sentences = pattern.split(news);
+        List<Sentence> sentenceList = new ArrayList<>(sentences.length);
         for (String senCont :
-                sentConts) {
+                sentences) {
             sentenceList.add(new Sentence(clean(senCont)));
         }
         return sentenceList;
@@ -47,29 +51,21 @@ public class PreProcess {
     /**
      * 批量分词
      *
-     * @param newsMap 新闻map
+     * @param newsMap 新闻集合
      */
     public static void segment(TreeMap<Integer, News> newsMap) {
-        System.out.println("--------分词------");
         for (Map.Entry<Integer, News> newsEntry :
                 newsMap.entrySet()) {
             News newsObj = newsEntry.getValue();
-            newsObj.setTitleSent(new Sentence(newsObj.getTitle()));
-            List<Sentence> sentenceList = PreProcess.split(newsObj.getContent(), PreProcess.END_LABEL);
-            newsObj.setSentenceList(sentenceList);
-            newsObj.setTitleSent(SegmentHandler.xfYunPos(newsObj.getTitleSent()));
-            for (Sentence sentence : sentenceList) {
-                SegmentHandler.xfYunPos(sentence);
-            }
-            SegmentHandler.xfYunPos(newsObj.getTitleSent());
+            segment(newsObj);
         }
     }
 
 
     /**
-     * 批量分词
+     * 对一篇新闻分词
      *
-     * @param newsObj 新闻map
+     * @param newsObj 新闻对象
      */
     public static void segment(News newsObj) {
         System.out.println("分词：");
@@ -77,10 +73,10 @@ public class PreProcess {
         List<Sentence> sentenceList = PreProcess.split(newsObj.getContent(), PreProcess.END_LABEL);
         newsObj.setSentenceList(sentenceList);
         newsObj.setTitleSent(SegmentHandler.xfYunPos(newsObj.getTitleSent()));
+        SegmentHandler.xfYunPos(newsObj.getTitleSent());
         for (Sentence sentence : sentenceList) {
             SegmentHandler.xfYunPos(sentence);
         }
-        SegmentHandler.xfYunPos(newsObj.getTitleSent());
     }
 
 }

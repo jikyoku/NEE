@@ -4,8 +4,10 @@ import org.apache.ibatis.type.Alias;
 
 /**
  * Created by shixu on 2016-07-28.
+ * 实体抽取
+ * 时间实体
+ * 命名实体
  */
-
 
 public class Entity {
 
@@ -45,10 +47,6 @@ public class Entity {
 
     public int getId() {
         return id;
-    }
-
-    public int getSentenceId() {
-        return sentenceId;
     }
 
     public int getEntityTypeId() {

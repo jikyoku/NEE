@@ -15,7 +15,7 @@ import java.util.List;
  * 事件元素抽取
  */
 public class EventElementsExtractor {
-    public static void srl(Sentence sentence) {
+    static void srl(Sentence sentence) {
         List<Word> wordList = sentence.getWordList();
         Event event = new Event();
         for (Word word :
@@ -72,10 +72,13 @@ public class EventElementsExtractor {
     public static void main(String[] args) {
         Sentence sentence = new Sentence("今天下午5点，中国国家奥委会主席、国家体育总局局长李兴，在召开的大会上强调，宁愿牺牲奖牌，也要办一次干干净净的奥运会");
         String strJson = HttpRequest.xfyunHttpApi(sentence.getSentenceContent(), HttpRequest.PATTERN_SRL, HttpRequest.FORMAT_JSON);
-        System.out.println(strJson);
         JSONArray jsonArray = JsonParser.getJsonArrayByStr(strJson);
         List<Word> wordList = JsonParser.parseJsonArrayToWords(jsonArray);
         sentence.setWordList(wordList);
+        System.out.println(sentence.getSentenceContent());
+        EntityExtractor.entityExtract(sentence);
         EventElementsExtractor.srl(sentence);
+        System.out.println(sentence.getEntityList());
+        System.out.println(sentence.getEvent());
     }
 }

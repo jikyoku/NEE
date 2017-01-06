@@ -1,56 +1,47 @@
 package edu.bupt.main.ced;
 
-import edu.bupt.main.preprocess.PreProcess;
 import edu.bupt.main.segment.SegmentHandler;
 import edu.bupt.mapper.CommonMapper;
 import edu.bupt.mapper.TriggerWordMapper;
 import edu.bupt.mapperimpl.CommonMapperImpl;
 import edu.bupt.mapperimpl.TriggerWordMapperImpl;
 import edu.bupt.model.*;
-
-import edu.bupt.service.NewsService;
-import edu.bupt.serviceimpl.NewsServiceImpl;
-import edu.bupt.util.TFIDFUtil;
-import org.fnlp.nlp.pipe.TFIDF;
-import org.junit.Test;
-
-import java.security.Key;
 import java.util.*;
 
 /**
  * Created by shi xu on 2016/12/5.
- * 抽取出一篇新闻的主题句
+ * 抽取出一篇新闻的主题句 主题词
  */
 public class TopicSentExtractor {
     private static CommonMapper commonMapper = new CommonMapperImpl();
     private static TriggerWordMapper triggerWordMapper = new TriggerWordMapperImpl();
+    private static Map<String, TriggerWord> triggerWordMap = triggerWordMapper.getMapOfTriggerWord();
+    public static int size = commonMapper.getSize();
+    private static final int MIN_TF_IDF = 10;
+    private static final int MIN_SENT_LENGTH = 16;
     private News news;  //待处理新闻
     private Map<String, Integer> topicWordMap;  //主题词集合
     private Map<String, Integer> tfMap;  //词频
     private Map<String, Map<String, Integer>> dfMap;  //文档频
     private Map<String, Integer> tfidfMap;
-    private Map<String, TriggerWord> triggerWordMap; //触发词集合
     private double titleScore = 0;
-    private int size = 80;
-    private static final int MIN_TF_IDF = 10;
-    private static final int MIN_SENT_LENGTH = 16;
 
-    public void setTopicWordMap(Map<String, Integer> topicWordMap) {
-        this.topicWordMap = topicWordMap;
-    }
     public Map<String, Integer> getTopicWordMap() {
         return topicWordMap;
     }
+
     public TopicSentExtractor(News news) {
         this.dfMap = commonMapper.getDfMap(); //word -> document frequency
         this.topicWordMap = new HashMap<>();
         this.tfMap = new HashMap<>();
         this.news = news;
-        this.triggerWordMap = triggerWordMapper.getMapOfTriggerWord();
         this.tfidfMap = new HashMap<>();
+        size++;
         buildTopicWordSet();
         this.titleScore = getTitleScore();
+        System.out.println("size-----------" + size);
     }
+
     /**
      * 获取主题句
      *
@@ -79,6 +70,7 @@ public class TopicSentExtractor {
         resultPrint(sentenceTreeMap);
         return sentenceTreeMap;
     }
+
     /**
      * 计算sentence的总权值
      *
@@ -90,18 +82,41 @@ public class TopicSentExtractor {
         int sentLenScore = sentence.getWordList().size() > MIN_SENT_LENGTH ? 1 : 0; //句子长度权重
         double sentTfidfScore = getAllSentTfidf(sentence);  //所有词的tfidf累加和
         //double postionScore = getPosition();  //句子在文中位置权重
-        Set<String> ttSet = getTriggerWordScores(sentence);  //触发词权重
+//        Set<String> ttSet = getTriggerWordScores(sentence);  //触发词权重
         double alpha;
         if (titleScore >= 2)
             alpha = 1;
         else
             alpha = 0.1;
         double similarity = getSim(sentence, news.getTitleSent());  //句子与标题相似度
-        double neScore = (double) sentence.getEntityList().size() / sentence.getWordList().size();  //实体贡献权重
+        double neScore = (double) getNerScore(sentence) / sentence.getWordList().size();  //实体贡献权重
         //double finalWeight = 0.6 * sentLenScore +  0.3 * sentTfidfScore + 70 * similarity * alpha + 4* neScore ;  //最终得分
         double finalWeight = 0.2 * sentLenScore + 4 * similarity * alpha + 6 * neScore;
         return sigmoid(finalWeight);
     }
+
+    /**
+     * 计算句子中实体种类个数
+     *
+     * @param sentence 句子
+     * @return 实体种类个数
+     */
+    private int getNerScore(Sentence sentence) {
+        int[] flag = new int[5];
+        List<Entity> entities = sentence.getEntityList();
+        for (Entity entity : entities) {
+            if (flag[entity.getEntityTypeId()] == 0)
+                flag[entity.getEntityTypeId()] = 1;
+        }
+        int score = 0;
+        for (int i :
+                flag) {
+            if (i != 0)
+                score++;
+        }
+        return score;
+    }
+
     /**
      * 通过余弦相似度法则 计算两个句子的相似度
      *
@@ -146,6 +161,7 @@ public class TopicSentExtractor {
         similarity = fenZi / (Math.sqrt(aSumOfSquare) * Math.sqrt(bSumOfSquare));
         return similarity;
     }
+
     /**
      * 判断词列表中是否存在这个词
      *
@@ -161,6 +177,7 @@ public class TopicSentExtractor {
         }
         return false;
     }
+
     /**
      * 计算标题的可参考价值
      *
@@ -179,6 +196,7 @@ public class TopicSentExtractor {
         }
         return titleScore;
     }
+
     /**
      * 统计句子中触发词的个数，如果大于
      *
@@ -197,6 +215,7 @@ public class TopicSentExtractor {
         }
         return matchedTriggerWordSet;
     }
+
     /**
      * 计算句子中所有词的tf-idf累加和
      *
@@ -216,6 +235,7 @@ public class TopicSentExtractor {
         }
         return sigmoid(value / length);
     }
+
     /**
      * 生成当前文章的主题词集合 并保存所有词的tf-idf值
      */
@@ -244,14 +264,14 @@ public class TopicSentExtractor {
             String word = entry.getKey();
             int df = 1;
             if (dfMap.get(word) == null) {
-                Map<String,Integer> wordMap = new HashMap<>();
-                wordMap.put(word,df);
-                dfMap.put(word,wordMap);
-                commonMapper.insertDFOne(word,df);
+                Map<String, Integer> wordMap = new HashMap<>();
+                wordMap.put(word, df);
+                dfMap.put(word, wordMap);
+                commonMapper.insertDFOne(word, df);
             } else {
                 df = Integer.parseInt(String.valueOf(dfMap.get(word).get("df_value"))) + 1;
-                dfMap.get(word).put(word,df);
-                commonMapper.updateDfOne(word,df);
+                dfMap.get(word).put(word, df);
+                commonMapper.updateDfOne(word, df);
             }
             int tf = entry.getValue();
             int tfIdf = tfIdf(tf, df, size);
@@ -260,6 +280,7 @@ public class TopicSentExtractor {
             tfidfMap.put(word, tfIdf);
         }
     }
+
     /**
      * sigmoid函数 归一化
      *
@@ -269,6 +290,7 @@ public class TopicSentExtractor {
     private static double sigmoid(double num) {
         return 1 / (1 + Math.pow(Math.E, -num));
     }
+
     /**
      * 计算tf_idf值
      *
@@ -280,6 +302,7 @@ public class TopicSentExtractor {
     private static int tfIdf(int tf, int df, int n) {
         return new Double(tf * (Math.log(n / (df + 1)))).intValue();
     }
+
     /**
      * 打印结果
      *
@@ -310,7 +333,4 @@ public class TopicSentExtractor {
     }
 
 
-    public void test(){
-
-    }
 }

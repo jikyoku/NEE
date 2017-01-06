@@ -99,7 +99,7 @@ public class EntityExtractor {
 
 class TimeTagger {
     private static List<Pattern> timePattern = new ArrayList<>();
-    public TimeTagger() {
+    TimeTagger() {
         String timeExpPath = "model/time.exp";
         File expFile = new File(timeExpPath);
         if (expFile.exists() && expFile.isFile()) {
@@ -107,7 +107,7 @@ class TimeTagger {
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(expFile), "utf-8"));
                 while ((exp = br.readLine()) != null) {
-                    this.timePattern.add(Pattern.compile(exp));
+                    timePattern.add(Pattern.compile(exp));
                 }
                 br.close();
             } catch (IOException e) {
@@ -127,7 +127,7 @@ class TimeTagger {
         String text = s.getSentenceContent();
         Entity entity = null;
         int length;
-        for (Pattern pattern : this.timePattern) {
+        for (Pattern pattern : timePattern) {
             Matcher matcher = pattern.matcher(text);
             length = 0;
             while (matcher.find()) {

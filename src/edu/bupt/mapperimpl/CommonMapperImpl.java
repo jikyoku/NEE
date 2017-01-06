@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by shixu on 2016/12/5.
+ * Created by shi xu on 2016/12/5.
+ *
  */
 public class CommonMapperImpl implements CommonMapper {
     @Override
@@ -91,6 +92,24 @@ public class CommonMapperImpl implements CommonMapper {
         SqlSession session = SessionFactoryUtil.openSeeion();
         CommonMapper cm = session.getMapper(CommonMapper.class);
         cm.insertDFOne(word,df);
+        session.commit();
+        session.close();
+    }
+
+    @Override
+    public Integer getSize() {
+        SqlSession session = SessionFactoryUtil.openSeeion();
+        CommonMapper cm = session.getMapper(CommonMapper.class);
+        Integer size = cm.getSize();
+        session.close();
+        return size;
+    }
+
+    @Override
+    public void updateSize(Integer size) {
+        SqlSession session = SessionFactoryUtil.openSeeion();
+        CommonMapper cm = session.getMapper(CommonMapper.class);
+        cm.updateSize(size);
         session.commit();
         session.close();
     }
