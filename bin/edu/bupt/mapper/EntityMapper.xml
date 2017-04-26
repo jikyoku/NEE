@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.bupt.mapper.EntityMapper">
+
+
+
+    <resultMap id="EntityResultMap" type="Entity">
+        <result property="id" column="entityId"/>
+        <result property="entityTypeId" column="entityTypeId"></result>
+        <result property="sentenceId" column="sentenceId"></result>
+        <result property="entityContent" column="entityContent"></result>
+        <result property="position" column="position"></result>
+    </resultMap>
+
+
+    <insert id="addEntityBatch" useGeneratedKeys="true" parameterType="java.util.List">
+        <!--<selectKey resultType="long" keyProperty="id" order="AFTER">-->
+        <!--SELECT last_insert_id()-->
+        <!--</selectKey>-->
+        insert into entity (entityId,entityTypeId,sentenceId,entityContent,position)
+        VALUES
+        <foreach collection="list" item="entity" index="index" separator=",">
+            (#{entity.id},#{entity.entityTypeId},#{entity.sentenceId},#{entity.entityContent},#{entity.position})
+        </foreach>
+    </insert>
+</mapper>
+
+

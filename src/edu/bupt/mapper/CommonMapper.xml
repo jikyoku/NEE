@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.bupt.mapper.CommonMapper">
+    <insert id="insertWord" keyProperty="id" useGeneratedKeys="true">
+        insert into word (word) VALUES
+        <foreach collection="list" separator="," item="item">
+            (#{item})
+        </foreach>
+    </insert>
+
+    <select id="getDfMap" resultType="hashmap">
+        select df_value,word from df_word
+    </select>
+
+    <!--<select id="getDFMap" resultType="map">-->
+        <!--SELECT-->
+            <!--word,-->
+            <!--df_value-->
+        <!--FROM df_word-->
+    <!--</select>-->
+<!--批量插入  map类型-->
+    <insert id="insertDF" keyProperty="id" useGeneratedKeys="true" parameterType="hashmap">
+        insert into df_word (word,df_value) VALUES
+        <foreach collection="keys"  item="value" separator="," index="key">
+            (#{key},#{value})
+        </foreach>
+    </insert>
+
+</mapper>
+
+

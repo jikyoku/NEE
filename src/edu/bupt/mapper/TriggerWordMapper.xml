@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.bupt.mapper.TriggerWordMapper">
+    <insert id="addSentence" parameterType="Sentence" useGeneratedKeys="true" keyProperty="id">
+        insert into sentence values(#{id},#{articleId},#{sentenceContent})
+    </insert>
+
+
+
+    <select id="getListOfTriggerWord" resultType="edu.bupt.model.TriggerWord">
+        select * from triggerwords
+    </select>
+
+    <!--<select id="getMapOfTriggerWord" resultType="java.util.HashMap">-->
+        <!--select triggerWordContent,triggerWordId from triggerwords-->
+    <!--</select>-->
+
+    <insert id="addTrgWd" parameterType="TriggerWord" useGeneratedKeys="true" keyProperty="triggerWordId" >
+<!--        <selectKey keyProperty="triggerWordId" order="AFTER" resultType="int">
+            select last_insert_id()
+        </selectKey>-->
+
+<!--    再没有主键自增的情况下 可以使用mysql的uuid()方法，在执行插入直线，生成一个为一个的uuid,最为主键插入-->
+        <!--<selectKey keyProperty="triggerWordId" order="BEFORE" resultType="int">-->
+            <!--select uuid()-->
+        <!--</selectKey>-->
+        insert into triggerwords values(#{triggerWordId},#{eventSubTypeId},#{triggerWordContent})
+    </insert>
+
+
+    <!--模糊查询 ${value}，拼接符 可能引起sql注入-->
+    <select id="getTWByName" parameterType="string" resultType="TriggerWord">
+        select * from triggerwords where triggerwordcontent like '%${value}%'
+    </select>
+
+
+    <!--动态sql-->
+    <select id="getTW" parameterType="int" resultType="triggerword">
+        select * from triggerwords
+        <if test="id!= null">
+            where triggerwordid = #{id}
+        </if>
+    </select>
+
+
+    <!--<sql id=""/>-->
+
+    
+    <!--关联查询 一对多-->
+    <resultMap id="TWEventSubType" type="edu.bupt.model.TriggerWord">
+        <id column="triggerWordId" property="triggerWordId"></id>
+        <result column="eventSubTypeId" property="eventSubTypeId"></result>
+        <result column="triggerWordContent" property="triggerWordContent"></result>
+        
+        <association property="subEvent" javaType="edu.bupt.model.SubEvent">
+            <id property="id" column="eventsubtypeid"></id>
+            <result property="eventTypeId"  column="eventTypeId"></result>
+            <result property="eventSubType" column="eventSubType"></result>
+        </association>
+    </resultMap>
+
+    <select id="getTwAndSubType" resultMap="TWEventSubType">
+        select triggerwords.*, eventsubtype.* from triggerwords, eventsubtype where triggerwords.eventsubtypeid = eventsubtype.eventsubtypeid
+    </select>
+</mapper>
+
+
