@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--加在属性文件-->
+    <properties resource="db.properties"/>
+
+    <!--全局参数配置 比如开启二级缓存 或 延迟加载 日志等-->
+    <settings>
+        <setting name="logImpl" value="LOG4J2"/>
+        <!--开启二级缓存 默认为true-->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <!--设置别名-->
+    <typeAliases>
+        <!--<typeAlias alias="News" type="edu.bupt.model.News"/>-->
+        <!--<typeAlias alias="Entity" type="edu.bupt.model.Entity"/>-->
+        <package name="edu.bupt.model"/>
+    </typeAliases>
+
+    <!--类型处理器 完成jdbc和java类型的转换-->
+    <typeHandlers >
+    </typeHandlers>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <package name="edu.bupt.mapper"/>
+    </mappers>
+</configuration>
